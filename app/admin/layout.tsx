@@ -36,7 +36,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           </div>
           <div className="lg:hidden"><AdminNav horizontal /></div>
         </header>
-        <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+        <main id="main" className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );

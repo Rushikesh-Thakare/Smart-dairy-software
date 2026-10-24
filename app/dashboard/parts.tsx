@@ -2,6 +2,11 @@ import { AlertCircle, CircleCheck, Hourglass, ShieldAlert, type LucideIcon } fro
 import { Badge, Empty, tableStyles } from "../ui";
 
 const { th, td } = tableStyles;
+export const DateOnly = ({ iso }: { iso: string }) => {
+  const d = new Date(iso);
+  return <><span className="sm:hidden">{d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span><span className="hidden sm:inline">{d.toLocaleDateString(undefined, { dateStyle: "medium" })}</span></>;
+};
+
 export const When = ({ iso }: { iso: string }) => {
   const d = new Date(iso);
   return <>{d.toLocaleDateString(undefined, { dateStyle: "medium" })}<span className="hidden text-slate-500 sm:inline"> · {d.toLocaleTimeString(undefined, { timeStyle: "short" })}</span></>;
@@ -21,15 +26,15 @@ export const LoadError = ({ what }: { what: string }) => (
 );
 
 const statusInfo: Record<string, { icon: LucideIcon; tone: string; text: string }> = {
-  approved: { icon: CircleCheck, tone: "bg-emerald-400/20 text-emerald-50", text: "Your collections are being recorded." },
-  pending: { icon: Hourglass, tone: "bg-amber-300/25 text-amber-50", text: "Waiting for admin approval. Collections can be recorded once you are approved." },
-  suspended: { icon: ShieldAlert, tone: "bg-rose-400/30 text-rose-50", text: "Please contact the dairy admin." },
+  approved: { icon: CircleCheck, tone: "text-emerald-300", text: "Your collections are being recorded." },
+  pending: { icon: Hourglass, tone: "text-amber-300", text: "Waiting for admin approval. Collections can be recorded once you are approved." },
+  suspended: { icon: ShieldAlert, tone: "text-rose-300", text: "Please contact the dairy admin." },
 };
 export const StatusLine = ({ status }: { status: string }) => {
   const { icon: Icon, tone, text } = statusInfo[status] ?? statusInfo.pending;
   return (
-    <div className={`flex items-start gap-2.5 rounded-xl px-3.5 py-2.5 text-sm ${tone}`}>
-      <Icon className="mt-0.5 size-4 shrink-0" aria-hidden />
+    <div className="flex items-start gap-2.5 rounded-xl bg-black/25 px-3.5 py-2.5 text-sm text-white">
+      <Icon className={`mt-0.5 size-4 shrink-0 ${tone}`} aria-hidden />
       <span><span className="font-semibold capitalize">{status}.</span> {text}</span>
     </div>
   );
@@ -76,7 +81,7 @@ export const PaymentHistory = ({ rows }: { rows: Payment[] }) =>
         <tbody className="divide-y divide-slate-100">
           {rows.map((p) => (
             <tr key={p.id} className="transition hover:bg-slate-50/70">
-              <td className={`${td} text-slate-700`}>{new Date(p.paid_on).toLocaleDateString(undefined, { dateStyle: "medium" })}</td>
+              <td className={`${td} text-slate-700`}><DateOnly iso={p.paid_on} /></td>
               <td className={`${td} text-right font-medium tabular-nums`}>{Number(p.amount).toFixed(2)}</td>
               <td className={`${td} hidden text-slate-600 sm:table-cell`}>{p.method ?? "-"}</td>
               <td className={`${td} hidden font-mono text-xs text-slate-600 sm:table-cell`}>{p.reference ?? "-"}</td>

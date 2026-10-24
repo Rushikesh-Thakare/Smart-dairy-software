@@ -7,6 +7,8 @@ import { FarmerCollections, LoadError, PaymentHistory, StatusLine, type FarmerCo
 
 const TOTALS_CAP = 1000; // shortcut: PostgREST returns at most 1000 rows; add a SQL totals function if a farmer exceeds this
 
+export const metadata = { title: "My dashboard" };
+
 export default async function Dashboard() {
   const supabase = await supabaseServer();
   const { data: { user } } = await supabase.auth.getUser();
@@ -43,12 +45,11 @@ export default async function Dashboard() {
 
   return (
     <Shell user={me.full_name} role="farmer" nav={[["Overview", "#overview"], ["Collections", "#collections"], ["Payments", "#payments"]]}>
-      <section id="overview" className="scroll-mt-32 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-slate-900 p-6 text-white shadow-lg sm:p-8">
+      <section id="overview" className="scroll-mt-32 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 p-6 text-white shadow-lg sm:p-8">
         <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-sm font-medium text-emerald-100">Welcome back</p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">{firstName}</h1>
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-emerald-100/90">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl"><span className="block text-sm font-medium text-emerald-100">Welcome back</span>{firstName}</h1>
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-white">
               <span className="inline-flex items-center gap-1.5"><Phone className="size-4" aria-hidden />{me.phone}</span>
               <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-4" aria-hidden />Member since {since}</span>
             </div>

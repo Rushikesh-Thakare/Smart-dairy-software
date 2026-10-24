@@ -5,6 +5,8 @@ import { SubmitButton } from "../client";
 import { flash } from "@/lib/messages";
 import { Alert, AuthLayout, Field } from "../ui";
 
+export const metadata = { title: "Log in" };
+
 export default async function Login({ searchParams }: PageProps<"/login">) {
   const { error } = await searchParams;
   return (

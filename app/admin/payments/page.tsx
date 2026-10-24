@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
 import { Badge, Card, Empty, tableStyles } from "../../ui";
+import { DateOnly } from "../../dashboard/parts";
 import { LoadError, Notice, PageHeader } from "../parts";
 
 const { th, td } = tableStyles;
+
+export const metadata = { title: "Payments" };
 
 export default async function Payments() {
   const { supabase } = await requireAdmin();
@@ -29,8 +32,8 @@ export default async function Payments() {
               <tbody className="divide-y divide-slate-100">
                 {rows.map((p) => (
                   <tr key={p.id} className="transition hover:bg-slate-50/70">
-                    <td className={`${td} text-slate-700`}>{new Date(p.paid_on).toLocaleDateString(undefined, { dateStyle: "medium" })}</td>
-                    <td className={td}><Link href={`/admin/farmers/${p.farmer_id}`} className="font-medium text-slate-900 hover:text-emerald-700 hover:underline">{p.profiles?.full_name ?? "Unknown"}</Link> <span className="font-mono text-xs text-slate-500">{p.profiles?.farmer_code}</span></td>
+                    <td className={`${td} text-slate-700`}><DateOnly iso={p.paid_on} /></td>
+                    <td className="px-2.5 py-3.5 sm:px-6"><Link href={`/admin/farmers/${p.farmer_id}`} className="inline-block py-1 font-medium text-slate-900 hover:text-emerald-700 hover:underline">{p.profiles?.full_name ?? "Unknown"}</Link> <span className="block font-mono text-xs text-slate-500 sm:inline">{p.profiles?.farmer_code}</span></td>
                     <td className={`${td} text-right font-medium tabular-nums`}>{Number(p.amount).toFixed(2)}</td>
                     <td className={`${td} hidden text-slate-600 sm:table-cell`}>{p.method ?? "-"}</td>
                     <td className={`${td} hidden font-mono text-xs text-slate-600 md:table-cell`}>{p.reference ?? "-"}</td>

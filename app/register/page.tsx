@@ -5,6 +5,8 @@ import { SubmitButton } from "../client";
 import { flash } from "@/lib/messages";
 import { Alert, AuthLayout, Field } from "../ui";
 
+export const metadata = { title: "Register" };
+
 export default async function Register({ searchParams }: PageProps<"/register">) {
   const { error } = await searchParams;
   return (

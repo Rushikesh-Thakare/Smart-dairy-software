@@ -8,6 +8,8 @@ import { FarmerActions, LoadError, PageHeader } from "../../parts";
 
 const CAP = 1000; // shortcut: totals cover the latest 1000 records (PostgREST row limit)
 
+export const metadata = { title: "Farmer details" };
+
 export default async function FarmerDetail({ params }: PageProps<"/admin/farmers/[id]">) {
   const { supabase } = await requireAdmin();
   const { id } = await params;
@@ -47,7 +49,7 @@ export default async function FarmerDetail({ params }: PageProps<"/admin/farmers
       </div>
 
       <div className="space-y-8">
-        <Card title="Recent collections" action={<Link href={`/admin/collections?farmer=${farmer.id}`} className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700 hover:underline">Full history<ArrowRight className="size-4" aria-hidden /></Link>}>
+        <Card title="Recent collections" action={<Link href={`/admin/collections?farmer=${farmer.id}`} className="inline-flex items-center gap-1 py-1 text-sm font-medium text-emerald-700 hover:underline">Full history<ArrowRight className="size-4" aria-hidden /></Link>}>
           {recent.error ? <LoadError what="collections" /> : <FarmerCollections rows={(recent.data ?? []) as FarmerCollection[]} />}
         </Card>
         <Card title="Payments">

@@ -6,6 +6,8 @@ import { AdminCollections, LoadError, PageHeader, Pager, type AdminRow } from ".
 
 const PAGE_SIZE = 25;
 
+export const metadata = { title: "Milk collections" };
+
 export default async function Collections({ searchParams }: PageProps<"/admin/collections">) {
   const { supabase } = await requireAdmin();
   const sp = await searchParams;

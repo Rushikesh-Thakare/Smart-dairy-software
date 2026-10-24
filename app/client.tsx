@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Check, Copy, Loader2 } from "lucide-react";
 import { btn } from "./styles";
@@ -25,13 +25,14 @@ export function ConfirmAction({ action, fields, trigger, title, description, con
   trigger: string; title: string; description: string; confirm: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   return (
     <>
       <button type="button" onClick={() => ref.current?.showModal()} className={btn.dangerGhost}>{trigger}</button>
-      <dialog ref={ref} className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 shadow-xl">
+      <dialog ref={ref} aria-labelledby={titleId} className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 shadow-xl">
         <form action={action} onSubmit={() => ref.current?.close()} className="p-6">
           {Object.entries(fields).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
-          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+          <h3 id={titleId} className="text-lg font-semibold text-slate-900">{title}</h3>
           <p className="mt-2 text-sm text-slate-600">{description}</p>
           <div className="mt-6 flex justify-end gap-3">
             <button type="button" onClick={() => ref.current?.close()} className={btn.secondary}>Cancel</button>

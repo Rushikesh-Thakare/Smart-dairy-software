@@ -4,6 +4,8 @@ import { requireAdmin } from "@/lib/admin";
 import { Card, Stat } from "../ui";
 import { ActivityChart, AdminCollections, LoadError, PageHeader, type AdminRow, type Daily } from "./parts";
 
+export const metadata = { title: "Admin overview" };
+
 export default async function Overview() {
   const { supabase, profile } = await requireAdmin(); // each page re-checks; the layout alone is not enough
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -27,7 +29,7 @@ export default async function Overview() {
       </div>
       <div className="space-y-8">
         <Card title="Collection activity">{na ? <LoadError what="activity data" /> : <ActivityChart daily={o.daily} />}</Card>
-        <Card title="Recent collections" action={<Link href="/admin/collections" className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700 hover:underline">View all<ArrowRight className="size-4" aria-hidden /></Link>}>
+        <Card title="Recent collections" action={<Link href="/admin/collections" className="inline-flex items-center gap-1 py-1 text-sm font-medium text-emerald-700 hover:underline">View all<ArrowRight className="size-4" aria-hidden /></Link>}>
           {recent.error ? <LoadError what="recent collections" /> : <AdminCollections rows={(recent.data ?? []) as unknown as AdminRow[]} />}
         </Card>
       </div>

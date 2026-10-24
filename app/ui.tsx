@@ -112,7 +112,7 @@ export const Shell = ({ title, subtitle, role, user, nav, children }: {
         </nav>
       )}
     </header>
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
+    <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
       {title && (
         <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{title}</h1>
@@ -134,11 +134,11 @@ export const AuthLayout = ({ title, subtitle, footer, children }: { title: strin
       </Link>
       <div className="relative">
         <h2 className="max-w-md text-3xl font-semibold leading-tight tracking-tight">Every litre, measured and recorded.</h2>
-        <p className="mt-3 max-w-md text-emerald-100/90">Farmers see their own collections. Admins manage farmers, approvals and records.</p>
+        <p className="mt-3 max-w-md text-emerald-50">Farmers see their own collections. Admins manage farmers, approvals and records.</p>
       </div>
-      <p className="relative text-sm text-emerald-100/70">Secure sign-in with row-level data isolation.</p>
+      <p className="relative text-sm text-emerald-100">Secure sign-in with row-level data isolation.</p>
     </aside>
-    <main className="flex items-center justify-center px-4 py-12 sm:px-8">
+    <main id="main" className="flex items-center justify-center px-4 py-12 sm:px-8">
       <div className="w-full max-w-sm">
         <div className="mb-8 lg:hidden"><Logo /></div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>

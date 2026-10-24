@@ -1,9 +1,10 @@
 import Link from "next/link";
 import {
   ArrowRight, BarChart3, ChevronDown, ClipboardList, Database, FlaskConical, KeyRound, LayoutDashboard,
-  Lock, Menu, Milk, Scale, ShieldCheck, Sprout, UserCheck, Wallet, type LucideIcon,
+  Lock, Milk, Scale, ShieldCheck, Sprout, UserCheck, Wallet, type LucideIcon,
 } from "lucide-react";
 import { HeroArt } from "./hero-art";
+import { MobileMenu } from "./menu";
 import { Logo, btn } from "./ui";
 
 const links = [
@@ -46,17 +47,7 @@ function Navbar() {
           <Link href="/login" className={btn.ghost}>Login</Link>
           <Link href="/register" className={btn.primary}>Register</Link>
         </div>
-        {/* No-JS mobile menu */}
-        <details className="group relative md:hidden">
-          <summary className="grid size-10 cursor-pointer list-none place-items-center rounded-lg text-slate-700 hover:bg-slate-100 [&::-webkit-details-marker]:hidden" aria-label="Menu">
-            <Menu className="size-5" aria-hidden />
-          </summary>
-          <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
-            {[...links, ["Login", "/login"], ["Register", "/register"]].map(([label, href]) => (
-              <Link key={label} href={href} className="block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">{label}</Link>
-            ))}
-          </div>
-        </details>
+        <MobileMenu items={[...links, ["Login", "/login"], ["Register", "/register"]]} />
       </div>
     </header>
   );
@@ -90,7 +81,7 @@ export default function Home() {
   return (
     <div id="top" className="flex min-h-screen flex-col bg-white">
       <Navbar />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white">
           <div className="absolute -left-32 -top-32 size-96 rounded-full bg-emerald-200/40 blur-3xl" aria-hidden />
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
@@ -167,7 +158,7 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-          <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-emerald-800 px-6 py-14 text-center shadow-lg sm:px-12">
+          <div className="rounded-3xl bg-gradient-to-br from-emerald-700 to-emerald-900 px-6 py-14 text-center shadow-lg sm:px-12">
             <Lock className="mx-auto size-8 text-emerald-200" aria-hidden />
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">Ready to see your collections?</h2>
             <p className="mx-auto mt-3 max-w-xl text-emerald-100">Register as a farmer to receive your collection code, or log in to your dashboard.</p>
@@ -187,9 +178,9 @@ export default function Home() {
             </span>
             <p className="mt-3 text-sm text-slate-400">Smart Dairy Management: digital milk collection records for farmers and dairy administrators.</p>
           </div>
-          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 text-sm">
             {[...links, ["Team", "#team"], ["Login", "/login"], ["Register", "/register"]].map(([label, href]) => (
-              <Link key={label} href={href} className="transition hover:text-emerald-400">{label}</Link>
+              <Link key={label} href={href} className="block py-1.5 transition hover:text-emerald-400">{label}</Link>
             ))}
           </nav>
         </div>

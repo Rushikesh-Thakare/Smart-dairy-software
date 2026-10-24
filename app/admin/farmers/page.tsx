@@ -10,6 +10,8 @@ const { th, td } = tableStyles;
 const STATUSES = ["pending", "approved", "suspended"];
 const LIMIT = 100; // shortcut: no pagination for farmers yet, add it past ~100 farmers
 
+export const metadata = { title: "Farmers" };
+
 export default async function Farmers({ searchParams }: PageProps<"/admin/farmers">) {
   const { supabase } = await requireAdmin();
   const sp = await searchParams;
@@ -48,15 +50,15 @@ export default async function Farmers({ searchParams }: PageProps<"/admin/farmer
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-50/70"><tr>
-                <th scope="col" className={th}>Name</th><th scope="col" className={`${th} hidden sm:table-cell`}>Phone</th><th scope="col" className={th}>Code</th>
+                <th scope="col" className={th}>Name</th><th scope="col" className={`${th} hidden sm:table-cell`}>Phone</th><th scope="col" className={`${th} hidden sm:table-cell`}>Code</th>
                 <th scope="col" className={th}>Status</th><th scope="col" className={`${th} hidden md:table-cell`}>Joined</th><th scope="col" className={`${th} text-right`}>Actions</th>
               </tr></thead>
               <tbody className="divide-y divide-slate-100">
                 {farmers.map((f) => (
                   <tr key={f.id} className="transition hover:bg-slate-50/70">
-                    <td className={td}><Link href={`/admin/farmers/${f.id}`} className="font-medium text-slate-900 hover:text-emerald-700 hover:underline">{f.full_name}</Link></td>
+                    <td className="px-2.5 py-3.5 sm:px-6"><Link href={`/admin/farmers/${f.id}`} className="inline-block py-1 font-medium text-slate-900 hover:text-emerald-700 hover:underline">{f.full_name}</Link><span className="block font-mono text-xs text-slate-500 sm:hidden">{f.farmer_code}</span></td>
                     <td className={`${td} hidden text-slate-600 sm:table-cell`}>{f.phone}</td>
-                    <td className={`${td} font-mono text-slate-700`}>{f.farmer_code}</td>
+                    <td className={`${td} hidden font-mono text-slate-700 sm:table-cell`}>{f.farmer_code}</td>
                     <td className={td}><Badge status={f.status} /></td>
                     <td className={`${td} hidden text-slate-600 md:table-cell`}>{new Date(f.created_at).toLocaleDateString(undefined, { dateStyle: "medium" })}</td>
                     <td className={`${td} text-right`}><FarmerActions id={f.id} name={f.full_name} status={f.status} /></td>

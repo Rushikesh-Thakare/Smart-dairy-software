@@ -11,7 +11,7 @@ const { th, td } = tableStyles;
 export const PageHeader = ({ title, subtitle, back, children }: { title: string; subtitle?: string; back?: { href: string; label: string }; children?: React.ReactNode }) => (
   <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
     <div>
-      {back && <Link href={back.href} className="mb-2 inline-flex items-center gap-1 text-sm font-medium text-emerald-700 hover:underline"><ChevronLeft className="size-4" aria-hidden />{back.label}</Link>}
+      {back && <Link href={back.href} className="mb-2 inline-flex items-center gap-1 py-1 text-sm font-medium text-emerald-700 hover:underline"><ChevronLeft className="size-4" aria-hidden />{back.label}</Link>}
       <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{title}</h1>
       {subtitle && <p className="mt-1 text-slate-500">{subtitle}</p>}
     </div>
@@ -83,7 +83,7 @@ export const AdminCollections = ({ rows }: { rows: AdminRow[] }) =>
               <tr key={r.id} className="transition hover:bg-slate-50/70">
                 <td className={`${td} text-slate-700`}><When iso={r.collected_at} /></td>
                 <td className="px-2.5 py-3.5 sm:px-6">
-                  <Link href={`/admin/farmers/${r.farmer_id}`} className="font-medium text-slate-900 hover:text-emerald-700 hover:underline">{r.profiles?.full_name ?? "Unknown"}</Link>{" "}
+                  <Link href={`/admin/farmers/${r.farmer_id}`} className="inline-block py-1 font-medium text-slate-900 hover:text-emerald-700 hover:underline">{r.profiles?.full_name ?? "Unknown"}</Link>{" "}
                   <span className="block font-mono text-xs text-slate-500 sm:inline">{r.profiles?.farmer_code}</span>
                 </td>
                 <td className={`${td} text-right font-medium tabular-nums`}>{Number(r.quantity_litres).toFixed(2)}</td>
@@ -100,7 +100,7 @@ export const AdminCollections = ({ rows }: { rows: AdminRow[] }) =>
 
 // Server actions re-check the admin role; these buttons only trigger them.
 export const FarmerActions = ({ id, name, status }: { id: string; name: string; status: string }) => (
-  <div className="flex items-center justify-end gap-1">
+  <div className="flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:justify-end">
     {status !== "approved" && (
       <form action={setStatus}>
         <input type="hidden" name="id" value={id} />
@@ -128,8 +128,8 @@ export function Pager({ base, page, pages, total, from, to }: { base: string; pa
     <div className="flex items-center justify-between border-t border-slate-100 px-5 py-3 text-sm text-slate-500 sm:px-6">
       <span>Showing {from}-{to} of {total}</span>
       <div className="flex gap-2">
-        {page > 1 ? <Link href={href(page - 1)} className={`${link} text-slate-700 hover:bg-slate-50`}><ChevronLeft className="size-4" aria-hidden />Previous</Link> : <span className={`${link} text-slate-300`}>Previous</span>}
-        {page < pages ? <Link href={href(page + 1)} className={`${link} text-slate-700 hover:bg-slate-50`}>Next<ChevronRight className="size-4" aria-hidden /></Link> : <span className={`${link} text-slate-300`}>Next</span>}
+        {page > 1 ? <Link href={href(page - 1)} className={`${link} text-slate-700 hover:bg-slate-50`}><ChevronLeft className="size-4" aria-hidden />Previous</Link> : <span aria-disabled="true" className={`${link} text-slate-500 opacity-60`}>Previous</span>}
+        {page < pages ? <Link href={href(page + 1)} className={`${link} text-slate-700 hover:bg-slate-50`}>Next<ChevronRight className="size-4" aria-hidden /></Link> : <span aria-disabled="true" className={`${link} text-slate-500 opacity-60`}>Next</span>}
       </div>
     </div>
   );
