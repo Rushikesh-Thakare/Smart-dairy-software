@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Clock, Droplets, ListChecks, Users } from "lucide-react";
 import { requireAdmin } from "@/lib/admin";
+import { AutoRefresh } from "../client";
 import { Card, Stat } from "../ui";
 import { ActivityChart, AdminCollections, LoadError, PageHeader, type AdminRow, type Daily } from "./parts";
 
@@ -20,6 +21,7 @@ export default async function Overview() {
 
   return (
     <>
+      <AutoRefresh />
       <PageHeader title="Overview" subtitle={`Welcome, ${profile.full_name.split(" ")[0]}. Here is how your dairy is doing.`} />
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Link href="/admin/farmers" className="block"><Stat label="Registered farmers" value={na ? "-" : String(o.farmers.total)} icon={Users} note={na ? "Unavailable" : `${o.farmers.approved} approved`} /></Link>

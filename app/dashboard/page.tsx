@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { CalendarDays, Droplets, ListChecks, Phone, Scale, Wallet } from "lucide-react";
 import { supabaseServer } from "@/lib/supabase";
-import { CopyCode } from "../client";
+import { AutoRefresh, CopyCode } from "../client";
 import { Card, Shell, Stat } from "../ui";
 import { FarmerCollections, LoadError, PaymentHistory, StatusLine, type FarmerCollection, type Payment } from "./parts";
 
@@ -45,6 +45,7 @@ export default async function Dashboard() {
 
   return (
     <Shell user={me.full_name} role="farmer" nav={[["Overview", "#overview"], ["Collections", "#collections"], ["Payments", "#payments"]]}>
+      <AutoRefresh />
       <section id="overview" className="scroll-mt-32 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 p-6 text-white shadow-lg sm:p-8">
         <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>

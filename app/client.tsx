@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom";
 import { Check, Copy, Loader2 } from "lucide-react";
 import { btn } from "./styles";
@@ -62,4 +63,20 @@ export function CopyCode({ code }: { code: string }) {
       <span aria-live="polite">{state === "copied" ? "Copied" : state === "failed" ? "Copy not allowed" : "Copy"}</span>
     </button>
   );
+}
+
+// Re-renders the server components so new collections appear without a manual reload. It runs the same
+// authenticated, RLS-filtered queries as a normal visit, and pauses when it could disturb the user.
+export function AutoRefresh({ seconds = 30 }: { seconds?: number }) {
+  const router = useRouter();
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (document.visibilityState !== "visible" || document.querySelector("dialog[open]")) return;
+      const el = document.activeElement;
+      if (el && ["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+      router.refresh();
+    }, seconds * 1000);
+    return () => clearInterval(id);
+  }, [router, seconds]);
+  return <p className="mb-4 text-right text-xs text-slate-500">Updates automatically every {seconds} seconds while this page is open.</p>;
 }

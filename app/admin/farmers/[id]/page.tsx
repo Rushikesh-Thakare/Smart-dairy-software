@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CalendarDays, Droplets, KeyRound, ListChecks, Phone, Wallet } from "lucide-react";
 import { isUuid, requireAdmin } from "@/lib/admin";
+import { AutoRefresh } from "../../../client";
 import { Badge, Card, Stat } from "../../../ui";
 import { FarmerCollections, PaymentHistory, type FarmerCollection, type Payment } from "../../../dashboard/parts";
 import { FarmerActions, LoadError, PageHeader } from "../../parts";
@@ -29,6 +30,7 @@ export default async function FarmerDetail({ params }: PageProps<"/admin/farmers
 
   return (
     <>
+      <AutoRefresh />
       <PageHeader title={farmer.full_name} subtitle="Farmer details and collection history." back={{ href: "/admin/farmers", label: "All farmers" }}>
         <FarmerActions id={farmer.id} name={farmer.full_name} status={farmer.status} />
       </PageHeader>

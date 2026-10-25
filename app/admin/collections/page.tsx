@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { X } from "lucide-react";
 import { isUuid, requireAdmin } from "@/lib/admin";
+import { AutoRefresh } from "../../client";
 import { Card } from "../../ui";
 import { AdminCollections, LoadError, PageHeader, Pager, type AdminRow } from "../parts";
 
@@ -29,6 +30,7 @@ export default async function Collections({ searchParams }: PageProps<"/admin/co
 
   return (
     <>
+      <AutoRefresh />
       <PageHeader title="Milk collections" subtitle="Every recorded collection, newest first.">
         {farmerId && (
           <Link href="/admin/collections" className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-800 hover:bg-emerald-100">
