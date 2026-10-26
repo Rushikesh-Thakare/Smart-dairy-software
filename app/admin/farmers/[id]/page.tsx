@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, CalendarDays, Droplets, KeyRound, ListChecks, Phone, Wallet } from "lucide-react";
+import { ArrowRight, CalendarDays, FlaskConical, KeyRound, ListChecks, Phone, Wallet } from "lucide-react";
 import { isUuid, requireAdmin } from "@/lib/admin";
 import { AutoRefresh } from "../../../client";
 import { Badge, Card, Stat } from "../../../ui";
@@ -19,12 +19,13 @@ export default async function FarmerDetail({ params }: PageProps<"/admin/farmers
   if (!farmer) notFound();
 
   const [totals, recent, pays] = await Promise.all([
-    supabase.from("milk_collections").select("quantity_litres", { count: "exact" }).eq("farmer_id", id).limit(CAP),
-    supabase.from("milk_collections").select("id, collected_at, quantity_litres, fat_tenths, rate_per_litre, total_amount, cattle_type, snf_tenths")
+    supabase.from("milk_collections").select("fat_tenths", { count: "exact" }).eq("farmer_id", id).limit(CAP),
+    supabase.from("milk_collections").select("id, collected_at, fat_tenths, cattle_type, snf_tenths")
       .eq("farmer_id", id).order("collected_at", { ascending: false }).limit(10),
     supabase.from("payments").select("id, amount, paid_on, method, reference, status").eq("farmer_id", id).order("paid_on", { ascending: false }).limit(CAP),
   ]);
-  const litres = (totals.data ?? []).reduce((s, r) => s + Number(r.quantity_litres), 0);
+  const fats = (totals.data ?? []).flatMap((r) => (r.fat_tenths == null ? [] : [r.fat_tenths]));
+  const avgFat = fats.length ? fats.reduce((s, f) => s + f, 0) / fats.length / 10 : null;
   const payRows = (pays.data ?? []) as Payment[];
   const paid = payRows.filter((p) => p.status === "paid").reduce((s, p) => s + Number(p.amount), 0);
 
@@ -46,7 +47,7 @@ export default async function FarmerDetail({ params }: PageProps<"/admin/farmers
 
       <div className="my-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
         <Stat label="Collections" value={totals.error ? "-" : String(totals.count ?? 0)} icon={ListChecks} />
-        <Stat label="Milk volume" value={totals.error ? "-" : `${litres.toFixed(2)} L`} icon={Droplets} />
+        <Stat label="Average fat" value={totals.error || avgFat === null ? "-" : `${avgFat.toFixed(1)}%`} icon={FlaskConical} />
         <Stat label="Paid to date" value={pays.error ? "-" : paid.toFixed(2)} icon={Wallet} note="Payments marked paid" />
       </div>
 

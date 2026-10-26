@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CreditCard, Droplets, LayoutDashboard, Radio, Users } from "lucide-react";
+import { CreditCard, Droplets, LayoutDashboard, Users } from "lucide-react";
 
 const items = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/farmers", label: "Farmers", icon: Users },
   { href: "/admin/collections", label: "Milk Collections", icon: Droplets },
-  { href: "/admin/readings", label: "FPGA Readings", icon: Radio },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
 ];
 

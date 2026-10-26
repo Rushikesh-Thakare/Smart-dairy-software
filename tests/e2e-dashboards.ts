@@ -45,7 +45,7 @@ pass("dashboards are served uncached");
 
 const s = await api("/api/sessions", { farmer_code: code, device_id: "e2e" });
 assert.equal(s.status, 201, "open session");
-const body = { measurement_id: randomUUID(), session_id: s.json.session_id, farmer_code: code, adc_value: 1500, fat_tenths: 40, quantity_litres: 1.11 };
+const body = { measurement_id: randomUUID(), session_id: s.json.session_id, farmer_code: code, adc_value: 1500, fat_tenths: 40 };
 const first = await api("/api/collections", body);
 assert.equal(first.status, 201, "save collection");
 assert.equal(await adminTotal(admin), a0 + 1, "admin dashboard must show exactly one new collection");
@@ -58,27 +58,4 @@ assert.equal(retry.json.id, first.json.id);
 assert.equal(await adminTotal(admin), a0 + 1, "a retried measurement must not add a record");
 if (farmer) assert.equal(await farmerTotal(farmer), f0 + 1);
 pass("duplicate submission: same record returned, dashboards unchanged");
-// FPGA fat readings (farmer code + fat, quantity typed later). Only runs with READINGS=1, because it needs the
-// 20261026000000_fpga_fat_readings.sql migration. Leaves one reading waiting in /admin/readings (expires in 30 minutes).
-if (process.env.READINGS === "1") {
-  const reading = (session_id: string, fat_tenths: number) => api("/api/sessions", { farmer_code: code, device_id: "e2e", session_id, fat_tenths });
-  const [s1, s2, s3] = [randomUUID(), randomUUID(), randomUUID()];
-  const r1 = await reading(s1, 42);
-  assert.equal(r1.status, 201); assert.equal(r1.json.session_id, s1); assert.equal(r1.json.duplicate, false);
-  const r1b = await reading(s1, 42);
-  assert.equal(r1b.status, 200); assert.equal(r1b.json.duplicate, true);
-  assert.equal((await reading(s1, 43)).status, 409, "same session id with another fat is a conflict");
-  const r2 = await reading(s2, 42);
-  assert.equal(r2.status, 200); assert.equal(r2.json.session_id, s1, "same fat while the first still waits is a repeat, not a new reading");
-  pass("reading API: created once, retries and repeats return the same reading");
-  assert.equal((await reading(s3, 45)).status, 201, "a different fat is a new reading");
-  const waiting = (await page("/admin/readings", admin)).html;
-  assert.match(waiting, /FPGA readings/); assert.match(waiting, new RegExp(`>${code}<`)); assert.match(waiting, />4\.5</);
-  assert.ok(!waiting.includes(">4.2<"), "the older reading was replaced by the newer one");
-  pass("admin page lists only the newest waiting reading");
-  assert.equal((await api("/api/sessions", { farmer_code: code, fat_tenths: 42 })).status, 400, "session_id and fat_tenths go together");
-  assert.equal((await reading(randomUUID(), 0)).status, 400, "fat 0 is invalid");
-  assert.equal((await api("/api/sessions", { farmer_code: code, device_id: "e2e" })).status, 201, "keypad session flow is unchanged");
-  pass("validation and the existing keypad session flow");
-}
 console.log("ALL PASSED");

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { CalendarDays, Droplets, ListChecks, Phone, Scale, Wallet } from "lucide-react";
+import { CalendarDays, FlaskConical, ListChecks, Phone } from "lucide-react";
 import { supabaseServer } from "@/lib/supabase";
 import { AutoRefresh, CopyCode } from "../client";
 import { Card, Shell, Stat } from "../ui";
@@ -20,9 +20,9 @@ export default async function Dashboard() {
   if (me.role === "admin") redirect("/admin");
 
   const [totals, recent, payments] = await Promise.all([
-    supabase.from("milk_collections").select("quantity_litres, total_amount", { count: "exact" }).eq("farmer_id", user.id).limit(TOTALS_CAP),
+    supabase.from("milk_collections").select("fat_tenths", { count: "exact" }).eq("farmer_id", user.id).limit(TOTALS_CAP),
     supabase.from("milk_collections")
-      .select("id, collected_at, quantity_litres, fat_tenths, rate_per_litre, total_amount, cattle_type, snf_tenths")
+      .select("id, collected_at, fat_tenths, cattle_type, snf_tenths")
       .eq("farmer_id", user.id).order("collected_at", { ascending: false }).limit(25),
     supabase.from("payments").select("id, amount, paid_on, method, reference, status")
       .eq("farmer_id", user.id).order("paid_on", { ascending: false }).limit(TOTALS_CAP),
@@ -30,16 +30,9 @@ export default async function Dashboard() {
 
   const rows = totals.data ?? [];
   const paidRows = (payments.data ?? []) as Payment[];
-  const litres = rows.reduce((s, r) => s + Number(r.quantity_litres), 0);
-  const priced = rows.filter((r) => r.total_amount != null);
-  const unpriced = rows.length - priced.length;
-  const earned = priced.reduce((s, r) => s + Number(r.total_amount), 0);
-  const paid = paidRows.filter((p) => p.status === "paid").reduce((s, p) => s + Number(p.amount), 0);
+  const fats = rows.flatMap((r) => (r.fat_tenths == null ? [] : [r.fat_tenths]));
+  const avgFat = fats.length ? fats.reduce((s, f) => s + f, 0) / fats.length / 10 : null;
   const count = totals.count ?? rows.length;
-  // Money is only shown when it can be computed from real prices; otherwise say so.
-  const hasEarnings = priced.length > 0;
-  const earnNote = !hasEarnings ? "Rates not set yet" : unpriced ? `Excludes ${unpriced} collection${unpriced > 1 ? "s" : ""} without a rate` : "From all collections";
-  const balanceNote = !hasEarnings ? (paid > 0 ? `Paid so far: ${paid.toFixed(2)}` : "Needs rates to calculate") : unpriced ? "Excludes unpriced collections" : "Earnings minus payments";
   const since = new Date(me.created_at).toLocaleDateString(undefined, { dateStyle: "medium" });
   const firstName = String(me.full_name).split(" ")[0];
 
@@ -65,11 +58,9 @@ export default async function Dashboard() {
         </div>
       </section>
 
-      <div className="my-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat label="Total litres" value={totals.error ? "-" : litres.toFixed(2)} icon={Droplets} note={totals.error ? "Unavailable" : undefined} />
-        <Stat label="Total collections" value={totals.error ? "-" : String(count)} icon={ListChecks} note={!totals.error && count > TOTALS_CAP ? `Totals cover your latest ${TOTALS_CAP}` : undefined} />
-        <Stat label="Earnings" value={totals.error ? "-" : hasEarnings ? earned.toFixed(2) : "Not available"} icon={Scale} note={totals.error ? "Unavailable" : earnNote} />
-        <Stat label="Outstanding balance" value={totals.error || payments.error ? "-" : hasEarnings ? (earned - paid).toFixed(2) : "Not available"} icon={Wallet} note={totals.error || payments.error ? "Unavailable" : balanceNote} />
+      <div className="my-8 grid grid-cols-2 gap-4">
+        <Stat label="Total collections" value={totals.error ? "-" : String(count)} icon={ListChecks} note={totals.error ? "Unavailable" : count > TOTALS_CAP ? `Totals cover your latest ${TOTALS_CAP}` : undefined} />
+        <Stat label="Average fat" value={totals.error || avgFat === null ? "-" : `${avgFat.toFixed(1)}%`} icon={FlaskConical} note={totals.error ? "Unavailable" : avgFat === null ? "No fat readings yet" : "Across your collections"} />
       </div>
 
       <div className="space-y-8">

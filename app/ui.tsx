@@ -133,7 +133,7 @@ export const AuthLayout = ({ title, subtitle, footer, children }: { title: strin
         Smart Dairy
       </Link>
       <div className="relative">
-        <h2 className="max-w-md text-3xl font-semibold leading-tight tracking-tight">Every litre, measured and recorded.</h2>
+        <h2 className="max-w-md text-3xl font-semibold leading-tight tracking-tight">Every reading, measured and recorded.</h2>
         <p className="mt-3 max-w-md text-emerald-50">Farmers see their own collections. Admins manage farmers, approvals and records.</p>
       </div>
       <p className="relative text-sm text-emerald-100">Secure sign-in with row-level data isolation.</p>

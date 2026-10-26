@@ -33,22 +33,22 @@ export const Notice = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-export type Daily = { day: string; collections: number; litres: number };
+export type Daily = { day: string; collections: number };
 
 export function ActivityChart({ daily }: { daily: Daily[] }) {
-  const max = Math.max(0, ...daily.map((d) => Number(d.litres)));
-  if (max === 0) return <Empty title="No collections in this period" hint={`Milk collected over the last ${daily.length} days will be charted here.`} />;
+  const max = Math.max(0, ...daily.map((d) => d.collections));
+  if (max === 0) return <Empty title="No collections in this period" hint={`Collections over the last ${daily.length} days will be charted here.`} />;
   const label = (day: string) => new Date(`${day}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short" });
-  const total = daily.reduce((s, d) => s + Number(d.litres), 0);
+  const total = daily.reduce((s, d) => s + d.collections, 0);
   return (
     <div className="px-5 pb-5 pt-4 sm:px-6">
       <p className="mb-4 text-sm text-slate-500">
-        Litres per day, last {daily.length} days: <span className="font-medium text-slate-900">{total.toFixed(2)} L</span>. Peak day {max.toFixed(2)} L.
+        Collections per day, last {daily.length} days: <span className="font-medium text-slate-900">{total}</span>. Busiest day {max}.
       </p>
-      <div role="img" aria-label={`Litres collected per day over the last ${daily.length} days, peak ${max.toFixed(2)} litres`} className="flex h-44 items-end gap-1.5 border-b border-slate-200 sm:gap-2">
+      <div role="img" aria-label={`Collections per day over the last ${daily.length} days, busiest day ${max}`} className="flex h-44 items-end gap-1.5 border-b border-slate-200 sm:gap-2">
         {daily.map((d) => (
-          <div key={d.day} title={`${label(d.day)}: ${Number(d.litres).toFixed(2)} L in ${d.collections} collection${d.collections === 1 ? "" : "s"}`} className="group flex h-full flex-1 flex-col justify-end">
-            <div className="rounded-t-md bg-gradient-to-t from-emerald-600 to-emerald-400 transition group-hover:from-emerald-700 group-hover:to-emerald-500" style={{ height: `${Number(d.litres) > 0 ? Math.max((Number(d.litres) / max) * 100, 3) : 0}%` }} />
+          <div key={d.day} title={`${label(d.day)}: ${d.collections} collection${d.collections === 1 ? "" : "s"}`} className="group flex h-full flex-1 flex-col justify-end">
+            <div className="rounded-t-md bg-gradient-to-t from-emerald-600 to-emerald-400 transition group-hover:from-emerald-700 group-hover:to-emerald-500" style={{ height: `${d.collections > 0 ? Math.max((d.collections / max) * 100, 3) : 0}%` }} />
           </div>
         ))}
       </div>
@@ -62,7 +62,7 @@ export function ActivityChart({ daily }: { daily: Daily[] }) {
 }
 
 export type AdminRow = {
-  id: string; collected_at: string; quantity_litres: number; fat_tenths: number | null; total_amount: number | null;
+  id: string; collected_at: string; fat_tenths: number | null;
   cattle_type?: string | null; snf_tenths?: number | null; farmer_id: string; profiles: { full_name: string; farmer_code: string } | null;
 };
 
@@ -73,8 +73,8 @@ export const AdminCollections = ({ rows }: { rows: AdminRow[] }) =>
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="bg-slate-50/70"><tr>
-          <th scope="col" className={th}>Date</th><th scope="col" className={th}>Farmer</th><th scope="col" className={`${th} text-right`}>Litres</th>
-          <th scope="col" className={`${th} hidden text-right sm:table-cell`}>Fat %</th><th scope="col" className={`${th} hidden md:table-cell`}>Details</th><th scope="col" className={`${th} text-right`}>Amount</th>
+          <th scope="col" className={th}>Date</th><th scope="col" className={th}>Farmer</th>
+          <th scope="col" className={`${th} text-right`}>Fat %</th><th scope="col" className={`${th} hidden md:table-cell`}>Details</th>
         </tr></thead>
         <tbody className="divide-y divide-slate-100">
           {rows.map((r) => {
@@ -86,10 +86,8 @@ export const AdminCollections = ({ rows }: { rows: AdminRow[] }) =>
                   <Link href={`/admin/farmers/${r.farmer_id}`} className="inline-block py-1 font-medium text-slate-900 hover:text-emerald-700 hover:underline">{r.profiles?.full_name ?? "Unknown"}</Link>{" "}
                   <span className="block font-mono text-xs text-slate-500 sm:inline">{r.profiles?.farmer_code}</span>
                 </td>
-                <td className={`${td} text-right font-medium tabular-nums`}>{Number(r.quantity_litres).toFixed(2)}</td>
-                <td className={`${td} hidden text-right tabular-nums sm:table-cell`}>{r.fat_tenths == null ? "-" : (r.fat_tenths / 10).toFixed(1)}</td>
+                <td className={`${td} text-right font-medium tabular-nums`}>{r.fat_tenths == null ? "-" : (r.fat_tenths / 10).toFixed(1)}</td>
                 <td className={`${td} hidden text-slate-600 md:table-cell`}>{details || "-"}</td>
-                <td className={`${td} text-right tabular-nums`}>{r.total_amount == null ? <span className="text-slate-500">Rate not set</span> : Number(r.total_amount).toFixed(2)}</td>
               </tr>
             );
           })}

@@ -17,7 +17,7 @@ export default async function Collections({ searchParams }: PageProps<"/admin/co
   const page = Math.max(1, Math.floor(Number(Array.isArray(sp.page) ? sp.page[0] : sp.page)) || 1);
 
   let query = supabase.from("milk_collections")
-    .select("id, collected_at, quantity_litres, fat_tenths, total_amount, cattle_type, snf_tenths, farmer_id, profiles(full_name, farmer_code)", { count: "exact" })
+    .select("id, collected_at, fat_tenths, cattle_type, snf_tenths, farmer_id, profiles(full_name, farmer_code)", { count: "exact" })
     .order("collected_at", { ascending: false }).range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   if (farmerId) query = query.eq("farmer_id", farmerId);
   const [{ data, error, count }, farmer] = await Promise.all([

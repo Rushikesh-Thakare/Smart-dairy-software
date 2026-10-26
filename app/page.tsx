@@ -14,22 +14,22 @@ const links = [
 ] as const;
 
 const features: [LucideIcon, string, string][] = [
-  [Milk, "Digital milk collection", "Each collection is recorded digitally with its date, quantity and the farmer it belongs to."],
+  [Milk, "Digital milk collection", "Each collection is recorded digitally with its date, fat reading and the farmer it belongs to."],
   [ClipboardList, "Farmer records", "Every farmer has an account and a four-digit collection code, with their full collection history in one place."],
-  [FlaskConical, "Fat measurement", "The fat estimate for each collection is stored alongside the quantity and shown as a percentage."],
-  [Wallet, "Transparent earnings", "Earnings and balance due appear on the farmer dashboard once the dairy has set its rates."],
+  [FlaskConical, "Fat measurement", "The fat reading for each collection is stored and shown as a percentage."],
+  [Wallet, "Payment records", "Payments recorded by the dairy appear in the farmer's payment history."],
   [ShieldCheck, "Secure record management", "Sign-in is authenticated and row-level security keeps each farmer's records private to them and to admins."],
 ];
 
 const workflow: [LucideIcon, string, string][] = [
   [KeyRound, "Farmer ID", "The farmer's four-digit code identifies them at the collection point."],
-  [Scale, "Milk Measurement", "Quantity is entered and the fat is estimated from the sensor reading."],
+  [Scale, "Milk Measurement", "The fat is estimated from the sensor reading."],
   [Database, "Digital Record", "The confirmed measurement is saved once as a secure record."],
   [LayoutDashboard, "Farmer Dashboard", "The record appears on the farmer's dashboard and in the admin overview."],
 ];
 
 const benefits = {
-  farmers: ["See your own collections, litres and fat readings", "Track earnings, payments and balance due", "Your records are visible only to you and the dairy admin", "Log in with just your phone number"],
+  farmers: ["See your own collections and fat readings", "See the payments recorded for you", "Your records are visible only to you and the dairy admin", "Log in with just your phone number"],
   admins: ["Approve or suspend farmers from one list", "Review every collection across all farmers", "See summary counts at a glance", "Admin access is controlled, never granted at registration"],
 };
 
@@ -93,7 +93,7 @@ export default function Home() {
                 Smarter Milk Collection. <span className="text-emerald-700">Transparent Dairy Management.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-                Record every collection digitally and give each farmer a clear, private view of their milk, fat readings and earnings.
+                Record every collection digitally and give each farmer a clear, private view of their collections and fat readings.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link href="/register" className={`${btn.primary} px-7 py-3.5 text-base`}>Get started<ArrowRight className="size-4" aria-hidden /></Link>

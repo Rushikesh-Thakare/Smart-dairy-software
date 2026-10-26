@@ -6,7 +6,7 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 const err = (error: string, status: number) => NextResponse.json({ error }, { status });
 
 // Saves one confirmed measurement. Retrying the same measurement_id is safe (returns the stored record).
-// Price fields stay null on purpose: no admin-approved rate exists yet.
+// Only the fat reading is recorded: quantity and price are not part of a collection.
 export async function POST(request: Request) {
   if (!isBridge(request)) return err("unauthorized", 401);
   const parsed = parseMeasurement(await request.json().catch(() => null));
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
   const { data: row, error } = await db.from("milk_collections").insert({
     measurement_id: m.measurement_id, farmer_id: farmer.id, session_id: session.id,
-    adc_value: m.adc_value, fat_tenths: m.fat_tenths, quantity_litres: m.quantity_litres, cattle_type: m.cattle_type,
+    adc_value: m.adc_value, fat_tenths: m.fat_tenths, cattle_type: m.cattle_type,
   }).select("id").single();
   if (error) {
     if (error.code === "23505") { // lost a race: same id retried, or the session was just used

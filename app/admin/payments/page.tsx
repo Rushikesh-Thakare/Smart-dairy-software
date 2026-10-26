@@ -18,7 +18,7 @@ export default async function Payments() {
   return (
     <>
       <PageHeader title="Payments" subtitle="Payments already stored in the database." />
-      <Notice>Recording payments and managing milk rates are not built yet, so this page is read-only. Collection amounts stay marked as rate not set until rates exist.</Notice>
+      <Notice>Recording payments is not built yet, so this page is read-only.</Notice>
       <Card title="Latest payments">
         {error ? <LoadError what="payments" /> : rows.length === 0 ? (
           <Empty title="No payments recorded" hint="Payment records will be listed here once they exist in the database." />

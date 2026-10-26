@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Clock, Droplets, ListChecks, Users } from "lucide-react";
+import { ArrowRight, Clock, FlaskConical, ListChecks, Users } from "lucide-react";
 import { requireAdmin } from "@/lib/admin";
 import { AutoRefresh } from "../client";
 import { Card, Stat } from "../ui";
@@ -13,10 +13,10 @@ export default async function Overview() {
   const [overview, recent] = await Promise.all([
     supabase.rpc("admin_overview", { days: 14, tz }),
     supabase.from("milk_collections")
-      .select("id, collected_at, quantity_litres, fat_tenths, total_amount, cattle_type, snf_tenths, farmer_id, profiles(full_name, farmer_code)")
+      .select("id, collected_at, fat_tenths, cattle_type, snf_tenths, farmer_id, profiles(full_name, farmer_code)")
       .order("collected_at", { ascending: false }).limit(10),
   ]);
-  const o = overview.data as { total_collections: number; total_litres: number; farmers: { total: number; pending: number; approved: number; suspended: number }; daily: Daily[] } | null;
+  const o = overview.data as { total_collections: number; average_fat_tenths: number | null; farmers: { total: number; pending: number; approved: number; suspended: number }; daily: Daily[] } | null;
   const na = overview.error || !o;
 
   return (
@@ -27,7 +27,7 @@ export default async function Overview() {
         <Link href="/admin/farmers" className="block"><Stat label="Registered farmers" value={na ? "-" : String(o.farmers.total)} icon={Users} note={na ? "Unavailable" : `${o.farmers.approved} approved`} /></Link>
         <Link href="/admin/farmers?status=pending" className="block"><Stat label="Pending approvals" value={na ? "-" : String(o.farmers.pending)} icon={Clock} note={na ? "Unavailable" : o.farmers.pending ? "Review now" : "All caught up"} /></Link>
         <Link href="/admin/collections" className="block"><Stat label="Total collections" value={na ? "-" : String(o.total_collections)} icon={ListChecks} note="All time" /></Link>
-        <Link href="/admin/collections" className="block"><Stat label="Milk volume" value={na ? "-" : `${Number(o.total_litres).toFixed(2)} L`} icon={Droplets} note="All time" /></Link>
+        <Link href="/admin/collections" className="block"><Stat label="Average fat" value={na || o.average_fat_tenths == null ? "-" : `${(Number(o.average_fat_tenths) / 10).toFixed(1)}%`} icon={FlaskConical} note="All collections" /></Link>
       </div>
       <div className="space-y-8">
         <Card title="Collection activity">{na ? <LoadError what="activity data" /> : <ActivityChart daily={o.daily} />}</Card>

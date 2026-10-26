@@ -22,7 +22,7 @@ const check = (name: string, got: number, want: number) => {
   console.log(`PASS ${name}`);
 };
 
-const reading = { adc_value: 1800, fat_tenths: 38, quantity_litres: 4.5 };
+const reading = { fat_tenths: 38 };
 check("wrong key rejected", (await post("/api/sessions", { farmer_code: code }, "nope")).status, 401);
 check("unknown farmer", (await post("/api/sessions", { farmer_code: "0000" })).status, 404);
 
@@ -30,7 +30,7 @@ const s = await post("/api/sessions", { farmer_code: code, device_id: "simulator
 check("open session", s.status, 201);
 const body = { measurement_id: randomUUID(), session_id: s.json.session_id as string, farmer_code: code, ...reading };
 
-check("bad ADC rejected", (await post("/api/collections", { ...body, adc_value: 9999 })).status, 400);
+check("bad fat rejected", (await post("/api/collections", { ...body, fat_tenths: 999 })).status, 400);
 const first = await post("/api/collections", body);
 check("save measurement", first.status, 201);
 const retry = await post("/api/collections", body);

@@ -13,8 +13,7 @@ export const When = ({ iso }: { iso: string }) => {
 };
 
 export type FarmerCollection = {
-  id: string; collected_at: string; quantity_litres: number; fat_tenths: number | null;
-  rate_per_litre: number | null; total_amount: number | null; cattle_type: string | null; snf_tenths: number | null;
+  id: string; collected_at: string; fat_tenths: number | null; cattle_type: string | null; snf_tenths: number | null;
 };
 export type Payment = { id: string; amount: number; paid_on: string; method: string | null; reference: string | null; status: string };
 
@@ -42,13 +41,12 @@ export const StatusLine = ({ status }: { status: string }) => {
 
 export const FarmerCollections = ({ rows }: { rows: FarmerCollection[] }) =>
   rows.length === 0 ? (
-    <Empty title="No collections yet" hint="When your milk is collected, each record shows up here with its quantity and fat reading. Give your collection code to the operator." />
+    <Empty title="No collections yet" hint="When your milk is collected, each record shows up here with its fat reading. Give your collection code to the operator." />
   ) : (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="bg-slate-50/70"><tr>
-          <th scope="col" className={th}>Date</th><th scope="col" className={`${th} text-right`}>Litres</th><th scope="col" className={`${th} text-right`}>Fat %</th>
-          <th scope="col" className={`${th} hidden sm:table-cell`}>Details</th><th scope="col" className={`${th} hidden sm:table-cell text-right`}>Rate</th><th scope="col" className={`${th} text-right`}>Amount</th>
+          <th scope="col" className={th}>Date</th><th scope="col" className={`${th} text-right`}>Fat %</th><th scope="col" className={`${th} hidden sm:table-cell`}>Details</th>
         </tr></thead>
         <tbody className="divide-y divide-slate-100">
           {rows.map((r) => {
@@ -56,11 +54,8 @@ export const FarmerCollections = ({ rows }: { rows: FarmerCollection[] }) =>
             return (
               <tr key={r.id} className="transition hover:bg-slate-50/70">
                 <td className={`${td} text-slate-700`}><When iso={r.collected_at} /></td>
-                <td className={`${td} text-right font-medium tabular-nums`}>{Number(r.quantity_litres).toFixed(2)}</td>
-                <td className={`${td} text-right tabular-nums`}>{r.fat_tenths == null ? "-" : (r.fat_tenths / 10).toFixed(1)}</td>
+                <td className={`${td} text-right font-medium tabular-nums`}>{r.fat_tenths == null ? "-" : (r.fat_tenths / 10).toFixed(1)}</td>
                 <td className={`${td} hidden text-slate-600 sm:table-cell`}>{details || "-"}</td>
-                <td className={`${td} hidden text-right tabular-nums sm:table-cell`}>{r.rate_per_litre == null ? <span className="text-slate-500">Not set</span> : Number(r.rate_per_litre).toFixed(2)}</td>
-                <td className={`${td} text-right tabular-nums`}>{r.total_amount == null ? <span className="text-slate-500">Pending rate</span> : Number(r.total_amount).toFixed(2)}</td>
               </tr>
             );
           })}
