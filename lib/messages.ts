@@ -9,6 +9,9 @@ const messages = {
   confirm: "Registration needs 'Confirm email' turned off in Supabase Auth settings.",
   register: "Could not register. Please try again.",
   auth: "Wrong phone/email or password.",
+  quantity: "Enter the quantity in litres: more than 0, up to 500, at most 2 decimals.",
+  reading: "That reading is no longer waiting. It was already saved, replaced by a newer one, or expired.",
+  save: "Could not save the collection. Please try again.",
 } as const;
 
 export type MessageCode = keyof typeof messages;
